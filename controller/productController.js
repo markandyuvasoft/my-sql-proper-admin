@@ -1,6 +1,10 @@
 const db = require("../models")
 
 
+// image update use
+const multer = require('multer')
+const path = require('path')
+
 
 // create a main model
 const Product = db.products
@@ -13,6 +17,7 @@ const addProduct = async (req,res) =>{
     // try {
 
     let info = {
+    image: req.file.path,
     title: req.body.title,
     description: req.body.description
 }
@@ -122,11 +127,40 @@ const deleteProduct =  async (req,res) =>{
 }
 
 
+// 6. upload image 
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'Images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: '1000000' },
+     
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/
+        const mimeType = fileTypes.test(file.mimetype)  
+        const extname = fileTypes.test(path.extname(file.originalname))
+
+        if(mimeType && extname) {
+            return cb(null, true)
+        }
+        cb('Give proper files formate to upload')
+    }
+}).single('image')
+
+
 
 module.exports = {
     addProduct,
     getAllProducts,
     getOneProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    upload
 }

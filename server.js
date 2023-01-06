@@ -21,6 +21,11 @@ const router = require('./routes/user.js')
 app.use('/api/products', router)
 
 
+// static images use
+
+app.use('/Images', express.static('./Images'))
+
+
 // testing api....
 app.get("/",(req,res)=>{
 

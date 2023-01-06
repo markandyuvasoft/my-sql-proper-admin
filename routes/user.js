@@ -31,7 +31,7 @@ router.put('/api/updateUser/:id', userController.updateUser)
 
 
 // product router.....
-router.post('/addProduct', productController.addProduct)
+router.post('/addProduct', productController.upload ,productController.addProduct)
 
 router.get('/allProducts',adminAuth.adminauth, productController.getAllProducts)
 
