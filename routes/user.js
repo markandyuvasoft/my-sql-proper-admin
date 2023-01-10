@@ -24,6 +24,10 @@ router.delete('/api/deleteUser/:id', userController.deleteUser)
 
 router.put('/api/updateUser/:id', userController.updateUser)
 
+router.put('/api/changePassword/:id', userController.changePassword)
+
+router.post('/api/refresh', userController.refreshToken)
+
 
 
 
@@ -33,11 +37,11 @@ router.put('/api/updateUser/:id', userController.updateUser)
 // product router.....
 router.post('/addProduct', productController.upload ,productController.addProduct)
 
-router.get('/allProducts',adminAuth.adminauth, productController.getAllProducts)
+router.get('/allProducts',checkAuth.checkauth, productController.getAllProducts)
 
-router.get('/:id', productController.getOneProduct)
+router.get('/:id',adminAuth.adminauth, productController.getOneProduct)
 
-router.put('/:id', productController.updateProduct)
+router.put('/:id',productController.upload,productController.updateProduct)
 
 router.delete('/:id', productController.deleteProduct)
 
@@ -45,8 +49,20 @@ router.delete('/:id', productController.deleteProduct)
 
 
 // register-login routers(admin)
-
 router.post('/api/loginAdmin', adminController.loginAdmin)
+
+router.get('/api/getAdmin', adminController.getAdmin)
+
+router.get('/api/getSingleAdmin/:id', adminController.getSingleAdmin)
+
+router.put('/api/updateAdmin/:id', adminController.updateAdmin)
+
+router.delete('/api/deleteAdmin/:id', adminController.deleteAdmin)
+
+
+
+
+
 
 
 

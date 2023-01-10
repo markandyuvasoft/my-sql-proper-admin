@@ -205,3 +205,121 @@ const addUserLogin = async (req, res) => {
 //     res.status(400).send("error");
 //   }
 // };
+
+
+
+
+
+
+// const loginAdmin = async (req, res, next) => {
+
+//   try {
+//     const email = req.body.email
+//     const password = req.body.password
+  
+//     const userdata = await User.findAll({ })
+  
+//     const unique = userdata.filter((val) => val.email === req.body.email);
+  
+    
+//     if (userdata) {
+  
+//       let user = await User.findOne({where:{ email: req.body.email }})
+  
+//        if (!user) {
+  
+//         return res.status(404).send({ error: "invalid email" })
+//       }
+  
+//       const passwordmatch = await bcrypt.compare(password, unique[0].dataValues.password)
+   
+//       if (passwordmatch) {
+  
+//         if (unique[0].dataValues.isAdmin === false) {
+  
+//           res.status(400).send({ error: "you are not admin" })
+        
+//         }else {
+  
+//           // const token = await generateTokens(unique[0].dataValues.id)
+//           const token = await generateTokens(unique[0].dataValues.id)
+
+  
+//           let Id = unique[0].dataValues.id
+  
+//           res.status(200).send({ success: "😉welcome admin..!!", token, Id })
+//         }
+  
+//       } else {
+//         res.status(400).send({ error: "please try again" })
+//       }
+   
+//     } else {
+//       res.status(400).send({ error: "please try again" })
+//     }
+
+    
+//   } catch (error) {
+//     res.status(400).send({ error: "please try again" })
+//   }
+
+//   };
+
+
+
+
+
+
+
+//  1. create product
+// const addProduct = async (req,res) =>{
+
+//     // try {
+
+//     let info = {
+//     image: req.file.path,
+//     title: req.body.title,
+//     description: req.body.description
+// }
+// console.log(req.file);
+//     if(!info.title || !info.description){
+
+//         res.status(400).send({message:"please fill the credentials"})
+
+//     }else{
+//         const product = await Product.create(info)
+
+//         res.status(200).send(product)
+//     }
+
+//     // } catch (error) {
+
+//     //     res.status(400).send("error")
+//     // }
+// }
+
+
+
+
+
+
+// const jwt = require('jsonwebtoken');
+
+// function checkAuth(req, res, next){
+  
+//     try{
+//         const token = req.headers.authorization.split(" ")[1]; 
+//         const decodedToken = jwt.verify(token, 'privatekey');
+//         req.userData = decodedToken;
+//         next();
+//     }catch(e){
+//         return res.status(401).json({
+//             'message': "Invalid or expired token provided!",
+//             'error':e
+//         });
+//     }
+// }
+
+// module.exports = {
+//     checkAuth: checkAuth
+// }
