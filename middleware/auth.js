@@ -40,8 +40,13 @@ const User = db.users;
 
 const checkauth=(req,res,next)=>{
     
-    let token = req.headers["authorization"];
-    token = token.split(" ")[1]; 
+    // let token = req.headers["authorization"];
+    // token = token.split(" ")[1]; 
+    const {authorization} = req.headers
+    if(!authorization){
+               return res.status(401).json({error:"only auth"})
+            }
+            const token = authorization.replace("Bearer ","")
 
     jwt.verify(token, "privatekey", async (err, user) => {
         if (user) {

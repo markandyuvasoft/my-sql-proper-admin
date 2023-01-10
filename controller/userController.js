@@ -33,6 +33,21 @@ const createtoken = async (id, res) => {
   }
 };
 
+
+
+const refreshtoken = async (id, res) => {
+  try {
+    // const tokn = await Jwt.sign({ _id: id }, config.secret)
+    const tokn = await jwt.sign({ _id: id }, "refresh", {
+      expiresIn: "1h",
+    });
+
+    return tokn;
+  } catch (error) {
+    res.send("error");
+  }
+};
+
 // 1. register api user....
 const addUser = async (req, res) => {
   try {
@@ -90,12 +105,15 @@ const addUserLogin = async (req, res, next) => {
         }
         const token = await createtoken(user.id);
 
-        let refreshToken = jwt.sign(user.id,"privatekey");
+        const refreshtoken1 = await refreshtoken(user.id);
+
+
+        // let refreshToken = jwt.sign(user.id,"refresh");
 
         refreshTokens.push(refreshToken);
 
         let Id = user.id;
-        res.status(200).send({ success: "😉welcome user..!!",refreshToken, token, Id });
+        res.status(200).send({ success: "😉welcome user..!!",refreshtoken1, token, Id });
       }
     }
   // } catch (error) {
@@ -222,7 +240,7 @@ const refreshToken = async (req,res)=>{
 
   const refreshToken = req.body.token;
 
-  jwt.verify(refreshToken, "privatekey",async (err, user) => {
+  jwt.verify(refreshToken, "refresh",async (err, user) => {
       if (!err) {
         
           const accessToken = jwt.sign(user,"privatekey");
