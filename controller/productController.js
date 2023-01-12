@@ -3,34 +3,54 @@ const db = require("../models");
 // image update use
 const multer = require("multer");
 const path = require("path");
+const fileUpload = require("express-fileupload");
+var cloudinary = require('cloudinary').v2;
+var dotenv=require('dotenv').config()
+
 
 // create a main model
 const Product = db.products;
 const User = db.users;
 
-//  1. create product
+// dotenv.config()
 
+//CLOUD CONDITIONS..................
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+})
+
+
+//  1. create product....
 const addProduct = async (req, res) => {
+
   try {
+
+    let image = req.file.path
+
     let { title, description } = req.body;
-
-    let image = req.file;
-
-    if (!info.title || !info.description) {
-      res.status(400).send({ message: "please fill the credentials" });
-
-    } else {
-      const product = await Product.create({
-        title,
-        description,
-        image: req.file.path,
-      });
-
-      res.status(200).send(product);
-    }
-
+    
+      const result = await cloudinary.uploader.upload(image)
+    
+      // console.log(result);
+    
+      if (!title || !description) {
+        
+        res.status(400).send({ message: "please fill the credentials" });
+      }else{
+    
+        const product = await Product.create({
+          title,
+          description,
+          image: result.secure_url, version_id: result.public_id,
+        });
+        
+        res.status(200).send(product);
+      }
   } catch (error) {
-    res.status(400).send("error");
+    
+    res.status(400).send({message:"error"});
   }
 };
 
@@ -40,6 +60,7 @@ const getAllProducts = async (req, res) => {
     let products = await Product.findAll({});
 
     if (products) {
+      
       res.status(200).send(products);
     } else {
       res.status(400).send({ message: "no data found" });
@@ -66,44 +87,34 @@ const getOneProduct = async (req, res) => {
 };
 
 // 4. update product
-// const updateProduct = async (req, res) => {
-//   // try {
-
-//   let id = req.params.id;
-
-//   const title = req.body;
-
-//   const description = req.body;
-
-//   const image = req.file;
-
-//   let product = await Product.update(image, { where: { id: id } });
-
-//   console.log(product);
-
-//   // res.status(200).send(product)
-
-//   // } catch (error) {
-//   //     res.status(200).send("something wrong....")
-//   // }
-// };
-
-
-
 
 const updateProduct = async (req, res) => {
 
-let id = req.params.id;
+let image = req.file.path
 
-const title = req.body;
+let id= req.params.id
 
-const description = req.body;
+let { title, description } = req.body;
 
-const image = req.file;
+let user = await Product.findOne({ where: { id: id } });
 
-let product = await Product.update(image, { where: { id: id } });
 
-console.log(product);
+const destroy = await cloudinary.uploader.destroy(image);
+
+  let result;
+
+  if (destroy) {
+       result = await cloudinary.uploader.upload(image)
+    }
+    const data = {
+      title,
+      description,
+      image: result.secure_url, version_id: result.public_id,
+    };
+
+   user = await Product.update(data, { where: { id: id } });
+
+   res.status(200).send({ status: "success", updateDetails: user });
 
 };
 
@@ -151,7 +162,10 @@ const upload = multer({
     }
     cb("Give proper files formate to upload");
   },
+// })
 }).single("image");
+
+
 
 module.exports = {
   addProduct,

@@ -19,7 +19,6 @@ const secure = async (password) => {
 };
 
 // create token...
-
 const createtoken = async (id, res) => {
   try {
     // const tokn = await Jwt.sign({ _id: id }, config.secret)
@@ -34,7 +33,7 @@ const createtoken = async (id, res) => {
 };
 
 
-
+// create refresh token.....
 const refreshtoken = async (id, res) => {
   try {
     // const tokn = await Jwt.sign({ _id: id }, config.secret)
@@ -87,13 +86,16 @@ const addUserLogin = async (req, res, next) => {
 
     if (!email || !password) {
       res.status(400).send({ error: "please fill the proper field " });
+
     } else {
       let user = await User.findOne({ where: { email: req.body.email } });
 
       if (!user) {
         return res.status(404).send({ error: "invalid email" });
+
       } else if (user.isVarified === false) {
         res.status(400).send({ error: "please verify" });
+
       } else {
         const checkpassword = await bcrypt.compare(
           req.body.password,
@@ -106,7 +108,6 @@ const addUserLogin = async (req, res, next) => {
         const token = await createtoken(user.id);
 
         const refreshtoken1 = await refreshtoken(user.id);
-
 
         // let refreshToken = jwt.sign(user.id,"refresh");
 
@@ -234,8 +235,7 @@ const changePassword = async (req, res) => {
 };
 
 
-// 8. refresh token 
-
+// 8. refresh token.....
 const refreshToken = async (req,res)=>{
 
   const refreshToken = req.body.token;

@@ -1,7 +1,8 @@
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
+const bodyParser = require('body-parser')
+const path = require("path");
 
 var corOptions = {
     origin: 'https://localhost:8081'
@@ -14,6 +15,8 @@ app.use(express.json())
 
 app.use(express.urlencoded({ extended: true}))
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
 
 // routers..
 const router = require('./routes/user.js')
